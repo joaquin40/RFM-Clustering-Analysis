@@ -26,12 +26,12 @@ Before performing clustering analysis data, we take two approaches:
 1. Log Transformation then scale data 
 2. Remove extreme outliers then scale data
 
-since the data is skewed. We comapre the cluster and choose the better approach to handle the skewed data.
+since the data is skewed. We compared the cluster and choose the better approach to handle the skewed data.
 
 
 ## Log Transformation
 
-For the first approach we transformed the data by taking the log transformation then normalizing the data.
+For the first approach, we transformed the data by taking the log transformation then normalizing the data.
 
 Before performing K-means, we calculate the Hopkins statistic, which measures the cluster tendency of the dataset. The  Hopkins statistic is .98, really close to 1. Thus the data contains meaningful clusters.
 
@@ -51,6 +51,7 @@ The K-means was performed with k = 3,4,5,6. The plots below show the cluster val
 
 In the Silhoutte plots above, the red dash line represents the average Silhoutte score. In all Silhoutte plots there at least one label that is below the average Silhoutte score meaning the "k" cluster is not a good choice.
 
+## Remove extreme outliers
 
 Instead of the log transformation, next we choose to remove the extreme outliers from the data then normalize the data. 
 
