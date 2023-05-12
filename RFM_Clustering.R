@@ -1,39 +1,39 @@
-## ----------------------------------------------------
+## -----------------------------------------------------
 knitr::purl("RFM_Clustering.rmd")
 
 
-## ----setup, include=FALSE----------------------------
+## ----setup, include=FALSE-----------------------------
 knitr::opts_chunk$set(echo = TRUE)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 pacman::p_load(tidyverse, lubridate, data.table, skimr, cluster, cowplot)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df <- fread("./data/Online Retail.csv")
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df
 skim(df)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 DataExplorer::plot_missing(df)
 dev.copy(png, "./images/missing.png")
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df1 <- drop_na(df)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 skim(df1)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df2 <- df1 %>% 
   mutate(InvoiceDate = dmy_hm(InvoiceDate)) 
 
@@ -61,11 +61,11 @@ df3 <- df2 %>%
 df3 %>% head()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 skim(df3)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 frq <- ggplot(df3, aes(frequency)) + 
   geom_boxplot() +
   labs(x = "Frequency") +
@@ -89,11 +89,11 @@ rec <- ggplot(df3, aes(recency_num)) +
 ggsave("./images/rfm_boxplot.png",cowplot::plot_grid(frq, mon, rec,ncol = 1))
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 summary(df3)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df3_positive <- df3 %>% 
   select(frequency, monetary, recency_num, CustomerID) %>% 
   filter(monetary > 0)
@@ -105,22 +105,22 @@ df3_positive_log_scale <- data.frame(scale(df3_positive[,1:3])) %>%
   rename(CustomerID = "df3_positive$CustomerID")
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm_log <- df3_positive_log_scale
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 pacman::p_load(NbClust, clustertend, factoextra,hopkins)
 
 res <- get_clust_tendency(rfm_log[,1:3], n = nrow(rfm_log[,1:3])-1, graph = T, gradient =  list(low = "steelblue", high = "white")
 )
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 res$hopkins_stat
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 fviz_nbclust(rfm_log[,1:3], kmeans, method = "wss")+ theme_classic()
 dev.copy(png, "./images/wss_log.png")
 dev.off()
@@ -130,17 +130,17 @@ dev.copy(png, "./images/silhouette_log.png")
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 clusternum_log <- NbClust((rfm_log[,1:3]), distance="euclidean", method="kmeans")
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 set.seed(1)
 km_log <- kmeans(rfm_log[,1:3], 7, nstart = 100, iter.max = 100)
 #km
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 max_cluster <- max(unique(km_log$cluster))
 
 fviz_cluster(km_log, data = rfm_log[,1:3], palette = c("#FC4E07", "#00AFBB", "#E7B800", "#008A00", "#288BA8", "#E83845", "#846AB0"), ellipse.type = "euclid", 
@@ -152,7 +152,7 @@ dev.copy(png, paste0("./images/log_pca_kmeans_",max_cluster ,".png") )
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 sil <-  silhouette(km_log$cluster, dist(rfm_log[,1:3]))
 fviz_silhouette(sil ,palette =c("#FC4E07", "#00AFBB", "#E7B800", "#008A00","#288BA8", "#E83845", "#846AB0"), ggtheme = theme_classic())
 
@@ -160,21 +160,21 @@ dev.copy(png, paste0("./images/log_val_pca_kmeans_", max_cluster, ".png"))
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df3_positive$cluster<- km_log$cluster
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 df3_positive %>% 
   group_by(cluster) %>% 
   count()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm_stat <-df3_positive[,c("frequency", "monetary", "recency_num", "cluster")]
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm_stat_cluster <- rfm_stat %>% 
   group_by(cluster) %>% 
   summarise(
@@ -188,7 +188,7 @@ rfm_stat_cluster <- rfm_stat %>%
 rfm_stat_cluster
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 stat_name_rfm <- colnames(rfm_stat_cluster[-1])
 
 gg <- function(y){
@@ -210,21 +210,21 @@ map(stat_name_rfm[1:3], gg)
 
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 iqr <- apply(df3[,c(2,3,5)], 2, IQR)
 
 lower <-  apply(df3[,c(2,3,5)], 2, quantile, probs = c(0.25)) - 3 * iqr
 upper <- apply(df3[,c(2,3,5)], 2, quantile, probs = c(0.75)) + 3 * iqr
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 remove_outliers <- df3 %>% 
   filter(between(frequency, lower[1],upper[1])) %>% 
   filter(between(monetary, lower[2],upper[2]))  %>%
   filter(between(recency_num, lower[3],upper[3])) 
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm <- data.frame(scale(remove_outliers[,c(2:3, 5)] )) %>% 
   cbind(remove_outliers$CustomerID) %>%
   rename(CustomerID = "remove_outliers$CustomerID")
@@ -245,7 +245,7 @@ for(i in seq_along(col_name)){
 
 
 
-## ---- eval=FALSE, echo=FALSE-------------------------
+## ---- eval=FALSE, echo=FALSE--------------------------
 ## # Scale to remove outliers
 ## 
 ## rfm <- data.frame(scale(df3[,c(2:3, 5)] )) %>%
@@ -274,7 +274,7 @@ for(i in seq_along(col_name)){
 ## 
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 set.seed(1)
 wcss <- c()
 k <-  15
@@ -291,7 +291,7 @@ ggplot(data.frame(x = 2:(k+1), wcss = wcss), aes(x = x, y = wcss)) +
   labs(x = "Number of Cluster (k)", y = "Within-cluster sum of squares", title = "") 
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 set.seed(1)
 k_max <- 15
 
@@ -306,34 +306,34 @@ sil_width_mean_list <- map(2:k_max, sil_fun)
 
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 sil_width_mean <- unlist(sil_width_mean_list)
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 # Plot the results
 plot(2:k_max, sil_width_mean, type = "b", pch = 19, frame = FALSE, 
      xlab = "Number of clusters (k)", ylab = "Silhouette Width")
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 pacman::p_load(NbClust, clustertend, factoextra,hopkins)
 
 res <- get_clust_tendency(rfm[,1:3], n = nrow(rfm[,1:3])-1, graph = T, gradient =  list(low = "steelblue", high = "white")
 )
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 res$hopkins_stat
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 res$plot
 dev.copy(png, "./images/hopkins_plot.png")
 dev.copy()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 fviz_nbclust(rfm[,1:3], kmeans, method = "wss")+ theme_classic()
 dev.copy(png, "./images/wss.png")
 dev.off()
@@ -343,17 +343,17 @@ dev.copy(png, "./images/silhouette.png")
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 clusternum <- NbClust((rfm[,1:3]), distance="euclidean", method="kmeans")
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 set.seed(1)
 km <- kmeans(rfm[,1:3], 3, nstart = 100, iter.max = 100)
 #km
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 max_cluster <- max(unique(km$cluster))
 
 fviz_cluster(km, data = rfm[,1:3], palette = c("#FC4E07", "#00AFBB", "#E7B800", "#008A00", "#288BA8", "#E83845", "#846AB0"), ellipse.type = "euclid", 
@@ -365,7 +365,7 @@ dev.copy(png, paste0("./images/pca_kmeans_",max_cluster ,".png") )
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 sil <-  silhouette(km$cluster, dist(rfm[,1:3]))
 fviz_silhouette(sil ,palette =c("#FC4E07", "#00AFBB", "#E7B800", "#008A00","#288BA8", "#E83845", "#846AB0"), ggtheme = theme_classic())
 
@@ -373,27 +373,27 @@ dev.copy(png, paste0("./images/val_pca_kmeans_", max_cluster, ".png"))
 dev.off()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 km
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 #df3$cluster  <- km$cluster 
 rfm_unscaled$cluster  <- km$cluster 
 
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm_unscaled %>% 
   group_by(cluster) %>% 
   count()
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm_stat <- rfm_unscaled[,c("frequency", "monetary", "recency_num", "cluster")]
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 rfm_stat_cluster <- rfm_stat %>% 
   group_by(cluster) %>% 
   summarise(
@@ -407,7 +407,7 @@ rfm_stat_cluster <- rfm_stat %>%
 rfm_stat_cluster
 
 
-## ----------------------------------------------------
+## -----------------------------------------------------
 stat_name_rfm <- colnames(rfm_stat_cluster[-1])
 
 gg <- function(y){
@@ -424,7 +424,6 @@ p = ggplot(data = rfm_stat_cluster, aes(x= factor(cluster), y = .data[[y]], fill
 
 }
 
-y ="avgRecency"
 # bar plot
 map(stat_name_rfm[1:3], gg)
 

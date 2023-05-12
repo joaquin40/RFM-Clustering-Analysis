@@ -57,7 +57,7 @@ Instead of the log transformation, next we choose to remove the extreme outliers
 
 Before performing K-means, we calculate the Hopkins statistic, which measures the cluster tendency of the dataset. The  Hopkins statistic is .90, really close to 1. Thus, the data contains meaningful clusters.
 
-Simarly we plot the "Elbow method" and Silhoutte plot to pick a range of candidate for K-means clustering. Based on the two plots we tried k = 3 and 4 for the number of cluster.
+Similarly we plot the "Elbow method" and Silhoutte plot to pick a range of candidate for K-means clustering. Based on the two plots we tried k = 3 and 4 for the number of cluster.
 
 ![](./images/wss.png)
 ![](./images/silhouette.png)
