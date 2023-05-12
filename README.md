@@ -76,7 +76,7 @@ Below is the cluster plot of the K-means for k = 3.
 
 ## Results
 
-The table and bar plot below show the average of RFM by the each cluster. From the RFM analysis, the customers in cluster 3 are the most loyal customers since they frequently buy, spend the most and frequently buy. 
+The table and bar plot below show the average of RFM by the each cluster. From the RFM analysis, the customers in cluster 3 are the most loyal customers since they frequently buy, spend the most and frequently buy. Customer from cluster 1, are those spend and purchase less. The online should focus on cluster 1 customer to learn more about the customer (Market segmentation) 
 
 ![](./images/rfm_stat_cluster.png)
 
