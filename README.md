@@ -31,7 +31,7 @@ Next we look at descriptive statistics of the RFM data. The boxplot below shows 
 
 ![](./images/rfm_boxplot.png)
 
-
+ 
 Before performing clustering analysis data, we take two approaches: 
 
 1. Log Transformation then scale data 

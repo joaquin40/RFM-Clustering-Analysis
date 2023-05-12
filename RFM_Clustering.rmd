@@ -506,7 +506,7 @@ p = ggplot(data = rfm_stat_cluster, aes(x= factor(cluster), y = .data[[y]], fill
 
  print(p)
 
- ggsave(paste0("./images/", "rfm_kmeans", max_cluster, y, ".png"), p, width = 3, height = 2)
+ ggsave(paste0("./images/", "rfm_kmeans", max_cluster, y, ".png"), p, width = 2, height = 2)
 
 }
 
@@ -514,10 +514,4 @@ p = ggplot(data = rfm_stat_cluster, aes(x= factor(cluster), y = .data[[y]], fill
 map(stat_name_rfm[1:3], gg)
 
 ```
-
-
-
-
-
-
 
