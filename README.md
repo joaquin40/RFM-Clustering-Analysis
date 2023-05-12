@@ -91,6 +91,5 @@ The table and bar plot below show the average of RFM by the each cluster. From t
 
 ![](./images/rfm_stat_cluster.png)
 
-![](./images/rfm_kmeans3avgRecency.png)
-![](./images/rfm_kmeans3avgFrequency.png)
-![](./images/rfm_kmeans3avgMonetary.png)
+
+![](./images/results.png)
