@@ -504,16 +504,16 @@ p = ggplot(data = rfm_stat_cluster, aes(x= factor(cluster), y = .data[[y]], fill
   theme(legend.position = "none") + 
   scale_fill_manual(values = c("#FC4E07", "#00AFBB", "#E7B800", "#008A00","#288BA8", "#E83845", "#846AB0")) 
 
- ggsave(paste0("./images/", "rfm_kmeans", max_cluster, y, ".png"), p)
+ print(p)
+
+ ggsave(paste0("./images/", "rfm_kmeans", max_cluster, y, ".png"), p, width = 3, height = 2)
 
 }
 
 # bar plot
 map(stat_name_rfm[1:3], gg)
 
-
 ```
-
 
 
 
