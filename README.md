@@ -2,6 +2,17 @@
 
 In this project, we focus on creating Recency, Frequency, Monetary (RFM) K-means clustering to identify different groups of customers. The dataset contains online retail transactions from 01/2010 to 09/2011. 
 
+
+## Results
+
+The table and bar plot below show the average of RFM by the each cluster. From the RFM K-means cluster analysis, the customers in cluster 3 are the most loyal customers since they frequently buy, spend the most and frequently buy. Customer from cluster 1, are those spend and purchase less. The online should focus on cluster 1 customer to learn more about the customer (Market segmentation) 
+
+![](./images/rfm_stat_cluster.png)
+
+![](./images/rfm_kmeans3avgRecency.png)
+![](./images/rfm_kmeans3avgFrequency.png)
+![](./images/rfm_kmeans3avgMonetary.png)
+
 ## Data
 The dataset contains 541,909 observations with 8 variables. The dataset also contains about 25% missing values for the variable `CustomerID`. We remove those observations.   
 
